@@ -241,6 +241,16 @@ let Calendar = React.createClass({
     scrollToTime: PropTypes.instanceOf(Date),
 
     /**
+     * Determines whether or not you want the calendar's header to be displayed.
+     */
+    renderHeader: PropTypes.bool,
+
+    /**
+     * Determines whether or not you want the calendar's time labels to be displayed.
+     */
+    renderTimeLabel: PropTypes.bool,
+
+    /**
      * Localizer specific formats, tell the Calendar how to format and display dates.
      *
      * `format` types are dependent on the configured localizer; both Moment and Globalize

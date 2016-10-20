@@ -38,7 +38,9 @@ export default class TimeGrid extends Component {
     max: React.PropTypes.instanceOf(Date),
     scrollToTime: React.PropTypes.instanceOf(Date),
     dayFormat: dateFormat,
-    rtl: React.PropTypes.bool
+    rtl: React.PropTypes.bool,
+    renderHeader: React.PropTypes.bool,
+    renderTimeLabel: React.PropTypes.bool
   }
 
   static defaultProps = {
@@ -53,7 +55,9 @@ export default class TimeGrid extends Component {
      * There is a strange bug in React, using ...TimeColumn.defaultProps causes weird crashes
      */
     type: 'gutter',
-    now: new Date()
+    now: new Date(),
+    renderHeader: true,
+    renderTimeLabel: true
   }
 
   constructor(props) {
@@ -144,17 +148,21 @@ export default class TimeGrid extends Component {
     return (
       <div className='rbc-time-view'>
         {
+          this.props.renderHeader &&
           this.renderHeader(range, segments, width)
         }
         <div ref='content' className='rbc-time-content'>
           <div ref='timeIndicator' className='rbc-current-time-indicator'></div>
-          <TimeColumn
-            {...this.props}
-            showLabels
-            style={{ width }}
-            ref={gutterRef}
-            className='rbc-time-gutter'
-          />
+          {
+            this.props.renderTimeLabel &&
+            <TimeColumn
+              {...this.props}
+              showLabels
+              style={{ width }}
+              ref={gutterRef}
+              className='rbc-time-gutter'
+            />
+          }
           {
             this.renderEvents(range, rangeEvents, this.props.now)
           }
