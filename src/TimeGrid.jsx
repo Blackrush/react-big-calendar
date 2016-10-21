@@ -7,12 +7,10 @@ import localizer from './localizer'
 import DayColumn from './DayColumn';
 import EventRow from './EventRow';
 import TimeColumn from './TimeColumn';
-import BackgroundCells from './BackgroundCells';
 import Header from './Header';
 
 import getWidth from 'dom-helpers/query/width';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
-import message from './utils/messages';
 
 import { dateFormat} from './utils/propTypes';
 
@@ -22,7 +20,7 @@ import { accessor as get } from './utils/accessors';
 
 import {
   inRange, eventSegments, endOfRange
-  , eventLevels, sortEvents, segStyle } from './utils/eventLevels';
+  , sortEvents, segStyle } from './utils/eventLevels';
 
 const MIN_ROWS = 2;
 
@@ -148,7 +146,6 @@ export default class TimeGrid extends Component {
     return (
       <div className='rbc-time-view'>
         {
-          this.props.renderHeader &&
           this.renderHeader(range, segments, width)
         }
         <div ref='content' className='rbc-time-content'>
@@ -223,23 +220,13 @@ export default class TimeGrid extends Component {
   }
 
   renderHeader(range, segments, width) {
-    let { messages, rtl, onSelectSlot } = this.props;
+    let { rtl } = this.props;
     let { isOverflowing } = this.state || {};
 
-    let { levels } = eventLevels(segments);
     let style = {};
 
     if (isOverflowing)
       style[rtl ? 'marginLeft' : 'marginRight'] = scrollbarSize() + 'px';
-
-    function handleSelectSlot({ start, end }) {
-      let slots = range.slice(start, end + 1)
-      notify(onSelectSlot, {
-        slots,
-        start: slots[0],
-        end: slots[slots.length - 1]
-      })
-    }
 
     return (
       <div
@@ -251,31 +238,14 @@ export default class TimeGrid extends Component {
         style={style}
       >
         <div className='rbc-row'>
-          <div
-            className='rbc-label rbc-header-gutter'
-            style={{ width }}
-          />
-          { this.renderHeaderCells(range) }
-        </div>
-        <div className='rbc-row'>
-          <div
-            ref={ref => this._gutters[0] = ref}
-            className='rbc-label rbc-header-gutter'
-            style={{ width }}
-          >
-            { message(messages).allDay }
-          </div>
-          <div ref='allDay' className='rbc-allday-cell'>
-            <BackgroundCells
-              slots={range.length}
-              container={()=> this.refs.allDay}
-              selectable={this.props.selectable}
-              onSelectSlot={handleSelectSlot}
+          {
+            this.props.renderTimeLabel &&
+            <div
+              className='rbc-label rbc-header-gutter'
+              style={{ width }}
             />
-            <div style={{ zIndex: 1, position: 'relative' }}>
-              {this.renderAllDayEvents(range, levels)}
-            </div>
-          </div>
+          }
+          { this.renderHeaderCells(range) }
         </div>
       </div>
     )
